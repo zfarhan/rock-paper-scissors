@@ -1,9 +1,14 @@
+let humanScore = 0;
+let computerScore = 0;
+const winningScore = 5;
 
-let humanChoice;
+
+const resultsDiv = document.querySelector("#results");
+const scoreDiv = document.querySelector("#score");
 
 
 function getComputerChoice(){
-    let chance = Math.random()
+    let chance = Math.random();
     if (chance < 0.33) {
         return "rock";
     } if (chance < 0.66) {
@@ -13,8 +18,23 @@ function getComputerChoice(){
     }
 }
 
+function updateScore() {
+    scoreDiv.textContent = `Score - You: ${humanScore} Computer: ${computerScore}`;
+}
+
+function checkWinner() {
+    if (humanScore === winningScore || computerScore === winningScore) {
+        const winner = humanScore === winningScore ? "Human wins" : "Computer wins";
+        resultsDiv.textContent += `\n${winner}`;
+        disableButtons();
+    }
+}
+
+function disableButtons() {
+    document.querySelectorAll("button").forEach(button => button.disabled = true);
+}
+
 function playRound(human, computer){
-    const resultsDiv = document.querySelector("#results");
     let resultMessage;
 
     if (human === computer) {
@@ -24,27 +44,40 @@ function playRound(human, computer){
         (human === "paper" && computer === "rock") ||
         (human === "scissors" && computer === "paper")
     ){
+        humanScore++;
         resultMessage = `You win! ${human} beats ${computer}`;
     } else {
+        computerScore++;
         resultMessage = `You lose! ${computer} beats ${human}`
     }
     resultsDiv.textContent = resultMessage;
+    updateScore();
+    checkWinner();
 }
 
-let choice = document.querySelector('#choice');
-
-choice.addEventListener('click', (event) => {
-    let target = event.target;
-
-    if (target.tagName === "BUTTON") {
-        humanChoice = target.id;
+document.querySelector("#choice").addEventListener("click", (event) => {
+    if (event.target.tagName === "BUTTON") {
+        const humanChoice = event.target.id;
         const computerChoice = getComputerChoice();
-
-        console.log(`Human: $(humanChoice), Computer: $(computerChoice)`);
-
         playRound(humanChoice, computerChoice);
     }
-});
+})
+
+
+// let choice = document.querySelector('#choice');
+
+// choice.addEventListener('click', (event) => {
+//     let target = event.target;
+
+//     if (target.tagName === "BUTTON") {
+//         humanChoice = target.id;
+//         const computerChoice = getComputerChoice();
+
+//         console.log(`Human: $(humanChoice), Computer: $(computerChoice)`);
+
+//         playRound(humanChoice, computerChoice);
+//     }
+// });
 
 //             humanChoice = target.id;
 //             const computerChoice = getComputerChoice();
